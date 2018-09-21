@@ -1,0 +1,9 @@
+---
+# Ansible playbook to Uninstall and Install NMX
+
+- name: Uninstall NMX
+  win_package:
+    path: C:\Program Files\Harmonic\unins000.exe
+    product_id: NMX
+    arguments: /SP- /SILENT /SUPPRESSMSGBOXES
+    state: absent
