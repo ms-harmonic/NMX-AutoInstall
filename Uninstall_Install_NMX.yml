@@ -12,8 +12,7 @@
         arguments: /SP- /SILENT /SUPPRESSMSGBOXES
         restart_required: true
         state: absent
- tasks:
-- name: Download NMX Installer
-  win_get_url:
-    url: \\10.11.100.103\syscon\systemx\8.0.1.0\8.0.1.0.84-A
-    dest: c:\temp\8.0.1.0.84-A
+  - name: Download NMX Installer
+    win_get_url:
+      url: \\10.11.100.103\syscon\systemx\8.0.1.0\8.0.1.0.84-A
+      dest: c:\temp\8.0.1.0.84-A
