@@ -7,7 +7,7 @@
   tasks:
   - name: Uninstall NMX
     win_package:
-        path: C:\Program Files\Harmonic\unins000.exe
+        path: C:\Program Files\Harmonic\unins001.exe
         product_id: '{0940EFBB-D1FC-4C6F-91E0-996D9E40B2A2}_is1'
         arguments: /SP- /SILENT /SUPPRESSMSGBOXES
         state: absent
