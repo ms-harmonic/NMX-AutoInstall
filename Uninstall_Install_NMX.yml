@@ -5,9 +5,9 @@
   hosts: all
   gather_facts: false
   tasks:
-  - name: check if 7-Zip is already installed
-      win_reg_stat:
-      name: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{0940EFBB-D1FC-4C6F-91E0-996D9E40B2A2}_is1'
+  - name: check if NMX is already installed
+    win_reg_stat:
+      name: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{0940EFBB-D1FC-4C6F-91E0-996D9E40B2A2}_is1
       register: NMX_Installed
   - name: Uninstall NMX
     win_package:
