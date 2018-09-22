@@ -5,14 +5,30 @@
   hosts: all
   gather_facts: false
   tasks:
+  - name: check if 7-Zip is already installed
+      win_reg_stat:
+      name: 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{0940EFBB-D1FC-4C6F-91E0-996D9E40B2A2}_is1'
+      register: NMX_Installed
   - name: Uninstall NMX
     win_package:
         path: C:\Program Files\Harmonic\unins001.exe
         product_id: '{0940EFBB-D1FC-4C6F-91E0-996D9E40B2A2}_is1'
         arguments: /SP- /SILENT /SUPPRESSMSGBOXES
-        restart_required: true
+        reboot_required: true
         state: absent
-  - name: Download NMX Installer
-    win_get_url:
-      url: \\10.11.100.103\syscon\systemx\8.0.1.0\8.0.1.0.84-A
-      dest: c:\temp\8.0.1.0.84-A
+        when: NMX_Installed.exists == True
+        register: NMX_UnInstalled
+  - name: reboot host if required
+    win_reboot:
+        when: NMX_UnInstalled.reboot_required
+  - name: Install NMX
+    win_package:
+      path: C:\Temp\8.0.1.0.84-A\Install_NMX_8.0.1.0.84-A.exe
+      product_id: '{0940EFBB-D1FC-4C6F-91E0-996D9E40B2A2}_is1'
+      arguments: /SP /SILENT /SUPPRESSMSGBOXES
+      reboot_required: true
+      state: present
+      register: NMX_Installed
+  - name: reboot host if required
+    win_reboot:
+      when: NMX_Installed.reboot_required
