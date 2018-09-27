@@ -14,13 +14,9 @@
         path: C:\Program Files\Harmonic\unins001.exe
         product_id: '{0940EFBB-D1FC-4C6F-91E0-996D9E40B2A2}_is1'
         arguments: /SP- /SILENT /SUPPRESSMSGBOXES
+        reboot_required: true
         state: absent
-        when: NMX_Installed.exists == True
-  - name: reboot host if required
-    win_reboot:
-        test_command: whoami
-        reboot_timeout: 120
-        when: NMX_Installed.exists == True
+        when: NMX_Installed.exists == true
   - name: Install NMX
     win_package:
       path: C:\Temp\nmx\8.0.0.0.37-A\Install_NMX_8.0.0.0.37-A.exe
@@ -31,4 +27,4 @@
       register: NMX_ReInstalled
   - name: reboot host if required
     win_reboot:
-      when: NMX_ReInstalled.reboot_required
+      when: NMX_ReInstalled.reboot_required == true
