@@ -21,7 +21,7 @@
     win_package:
       path: C:\Temp\nmx\8.0.0.0.37-A\Install_NMX_8.0.0.0.37-A.exe
       product_id: '{0940EFBB-D1FC-4C6F-91E0-996D9E40B2A2}_is1'
-      arguments: /SP /SILENT /SUPPRESSMSGBOXES
+      arguments: /SP- /SILENT /SUPPRESSMSGBOXES /Type=ClientAndServer /NDDS_DOMAINID="{{SiteID}}"
       reboot_required: true
       state: present
       register: NMX_ReInstalled
