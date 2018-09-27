@@ -13,7 +13,7 @@
   - name: Create NMXInstall.ini file
     win_copy:
       dest: "C:\NMXInstall.ini"
-      content:
+      content: |
         [Option]
         SiteID="{{SiteID}}"
         SQLServerName=localhost
@@ -22,7 +22,7 @@
   - name: Create NMXUninstall.ini file
     win_copy:
       dest: "C:\NMXUninstall.ini"
-      content:
+      content: |
         ! QuickInstall, 0 - Proceed with uninstallation, 1 - Skip uninstallation.
         ! 1 Silent Mode True, Any other value  - False.
         [Mode]
