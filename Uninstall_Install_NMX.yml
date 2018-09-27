@@ -18,6 +18,8 @@
         when: NMX_Installed.exists == True
   - name: reboot host if required
     win_reboot:
+        test_command: whoami
+        reboot_timeout: 120
         when: NMX_Installed.exists == True
   - name: Install NMX
     win_package:
