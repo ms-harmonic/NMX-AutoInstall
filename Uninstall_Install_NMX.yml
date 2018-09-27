@@ -24,7 +24,3 @@
       arguments: /SP- /SILENT /SUPPRESSMSGBOXES /Type=ClientAndServer /NDDS_DOMAINID="{{SiteID}}"
       reboot_required: true
       state: present
-      register: NMX_ReInstalled
-  - name: reboot host if required
-    win_reboot:
-      when: NMX_ReInstalled.reboot_required == true
