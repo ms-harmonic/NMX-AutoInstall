@@ -2,6 +2,29 @@
 # Ansible playbook to Uninstall and Install NMX
 - hosts: all
   tasks:
+  - name: Get active catalog name
+    win_reg_stat:
+      path: HKLM:\SOFTWARE\Harmonic\MEM
+      name: ServiceSQLServerDSN
+    register: ActiveCatalog
+  - name: Create NMXInstall.ini file
+    win_copy:
+      dest: C:\NMXInstall.ini
+      content: |
+        [Option]
+        SiteID={{SiteID}}
+        SQLServerName=localhost
+        Catalog= ActiveCatalog.value
+        SQLServerBackupDir=C:\databasebkup
+  - name: Create NMXUninstall.ini file
+    win_copy:
+      dest: C:\NMXUninstall.ini
+      content: |
+        ! QuickInstall, 0 - Proceed with uninstallation, 1 - Skip uninstallation.
+        ! 1 Silent Mode True, Any other value  - False.
+        [Mode]
+        Silent=1
+        QuickInstall=1
   - name: Download NMX build from FTP with authentication
     win_get_url:
       url: "http://hivy/artifactory/ivy-repos/harmonic/nmx/{{version}}/{{build_number}}/nmx_build_output.zip"
