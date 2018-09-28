@@ -33,7 +33,7 @@
     when: NMX_Installed is defined and NMX_Installed.exists==true
   - name: Reboot NMX server after uninstalling NMX
     win_reboot:
-      when: NMX_Installed is defined and NMX_Installed.exists==true
+    when: NMX_Installed is defined and NMX_Installed.exists==true
   - name: Ping Host machine - wait till it restarts - timeout 5 minute
     win_wait_for:
       host: "{{ ansible_host }}"
