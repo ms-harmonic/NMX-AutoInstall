@@ -2,13 +2,13 @@
 # Ansible playbook to Uninstall and Install NMX
 - hosts: all
   tasks:
-  - name: Download file from FTP with authentication
+  - name: Download NMX build from FTP with authentication
     win_get_url:
       url: "http://hivy/artifactory/ivy-repos/harmonic/nmx/{{version}}/{{build_number}}/nmx_build_output.zip"
       dest: c:\temp\
       url_username: "{{username}}"
       url_password: "{{password}}"
-  - name: Unzip the NMX folder
+  - name: Unzip the NMX build folder
     win_unzip:
       src: c:\temp\nmx_build_output.zip
       dest: C:\temp\
@@ -31,6 +31,9 @@
         reboot_required: true
         state: absent
     when: uninstallStringFile is defined and uninstallStringFile.exists==true
+  - name: Reboot NMX server after uninstalling NMX
+    win_reboot:
+      when: uninstallStringFile is defined and uninstallStringFile.exists==true
   - name: Ping Host machine - wait till it restarts - timeout 5 minute
     win_wait_for:
       host: "{{ ansible_host }}"
