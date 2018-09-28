@@ -1,49 +1,56 @@
 ---
 # Ansible playbook to Uninstall and Install NMX
-
-- name: Auto Uninstall and Install NMX
-  hosts: all
-  gather_facts: false
+- hosts: all
   tasks:
-  - name: Get active catalog name
-    win_reg_stat:
-      path: HKLM:\SOFTWARE\Harmonic\MEM
-      name: ServiceSQLServerDSN
-      register: ActiveCatalog
-  - name: Create NMXInstall.ini file
-    win_copy:
-      dest: C:\NMXInstall.ini
-      content: |
-        [Option]
-        SiteID={{SiteID}}
-        SQLServerName=localhost
-        Catalog= ActiveCatalog.value
-        SQLServerBackupDir=C:\databasebkup
-  - name: Create NMXUninstall.ini file
-    win_copy:
-      dest: C:\NMXUninstall.ini
-      content: |
-        ! QuickInstall, 0 - Proceed with uninstallation, 1 - Skip uninstallation.
-        ! 1 Silent Mode True, Any other value  - False.
-        [Mode]
-        Silent=1
-        QuickInstall=1
+  - name: Download file from FTP with authentication
+    win_get_url:
+      url: "http://hivy/artifactory/ivy-repos/harmonic/nmx/{{version}}/{{build_number}}/nmx_build_output.zip"
+      dest: c:\temp\
+      url_username: "{{username}}"
+      url_password: "{{password}}"
+  - name: Unzip the NMX folder
+    win_unzip:
+      src: c:\temp\nmx_build_output.zip
+      dest: C:\temp\
+      rm: True
   - name: check if NMX is already installed
     win_reg_stat:
       path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{0940EFBB-D1FC-4C6F-91E0-996D9E40B2A2}_is1
-      register: NMX_Installed
+    register: NMX_Installed
+  - name: Get the file name to uninstall from registry
+    win_reg_stat:
+      path: HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{0940EFBB-D1FC-4C6F-91E0-996D9E40B2A2}_is1
+      name: UninstallString
+    register: uninstallStringFile
+    when: NMX_Installed is defined and NMX_Installed.exists==true
   - name: Uninstall NMX
     win_package:
-        path: C:\Program Files\Harmonic\unins001.exe
+        path: "{{ uninstallStringFile.value | regex_replace('^\"|\"$', '') }}"
         product_id: '{0940EFBB-D1FC-4C6F-91E0-996D9E40B2A2}_is1'
         arguments: /SP- /SILENT /SUPPRESSMSGBOXES
         reboot_required: true
         state: absent
-        when: NMX_Installed.exists == true
+    when: uninstallStringFile is defined and uninstallStringFile.exists==true
+  - name: Ping Host machine - wait till it restarts - timeout 5 minute
+    win_wait_for:
+      host: "{{ ansible_host }}"
+      port: "{{ansible_port}}" #SSH Port
+      state: started
+      timeout: 300 #wait for 5 minute to bring machine up
+  - name: Find the installation file
+    win_find:
+      paths: C:\Temp\nmx
+      patterns: ['*.exe']
+      recurse: True
+    register: resultFile
   - name: Install NMX
     win_package:
-      path: C:\Temp\nmx\8.0.0.0.37-A\Install_NMX_8.0.0.0.37-A.exe
+      path: "{{resultFile.files[0].path}}"
       product_id: '{0940EFBB-D1FC-4C6F-91E0-996D9E40B2A2}_is1'
       arguments: /SP- /SILENT /SUPPRESSMSGBOXES /Type=ClientAndServer /NDDS_DOMAINID="{{SiteID}}"
       reboot_required: true
       state: present
+  - name: Delete the NMX folder
+    win_file:
+      path: C:\Temp\nmx
+      state: absent
