@@ -57,12 +57,12 @@
   - name: Reboot NMX server after uninstalling NMX
     win_reboot:
     when: NMX_Installed is defined and NMX_Installed.exists==true
-  - name: Ping Host machine - wait till it restarts - timeout 5 minute
+  - name: Ping Host machine - wait till it restarts - timeout 5 minutes
     win_wait_for:
       host: "{{ ansible_host }}"
       port: "{{ansible_port}}" #SSH Port
       state: started
-      timeout: 300 #wait for 5 minute to bring machine up
+      timeout: 300 #wait for 5 minutes to bring machine up
   - name: Find the installation file
     win_find:
       paths: C:\Temp\nmx
@@ -76,6 +76,12 @@
       arguments: /SP- /SILENT /SUPPRESSMSGBOXES /Type=ClientAndServer /NDDS_DOMAINID="{{SiteID}}"
       reboot_required: true
       state: present
+  - name: Ping Host machine - wait till it restarts - timeout 5 minutes
+    win_wait_for:
+      host: "{{ ansible_host }}"
+      port: "{{ansible_port}}" #SSH Port
+      state: started
+      timeout: 300 #wait for 5 minutes to bring machine up
   - name: Delete the NMX folder
     win_file:
       path: C:\Temp\nmx
