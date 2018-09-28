@@ -14,7 +14,7 @@
         [Option]
         SiteID={{SiteID}}
         SQLServerName=localhost
-        Catalog= ActiveCatalog.value
+        Catalog={{ActiveCatalog.value}}
         SQLServerBackupDir=C:\databasebkup
   - name: Create NMXUninstall.ini file
     win_copy:
