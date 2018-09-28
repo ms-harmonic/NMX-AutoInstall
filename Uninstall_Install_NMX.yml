@@ -57,6 +57,10 @@
   - name: Reboot NMX server after uninstalling NMX
     win_shell: Restart-Computer -Force
     when: NMX_Installed is defined and NMX_Installed.exists==true
+  - name: Wait 2 mins for server to reboot
+    pause:
+      seconds: 120
+    when: NMX_Installed is defined and NMX_Installed.exists==true
   - name: Ping Host machine - wait till it restarts - timeout 5 minutes
     win_wait_for:
       host: "{{ ansible_host }}"
