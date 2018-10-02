@@ -25,6 +25,10 @@
         [Mode]
         Silent=1
         QuickInstall=1
+  - name: Delete the NMX folder - Cleanup before downloading new build
+    win_file:
+      path: C:\Temp\nmx
+      state: absent
   - name: Download NMX build from FTP with authentication
     win_get_url:
       url: "http://hivy/artifactory/ivy-repos/harmonic/nmx/{{version}}/{{build_number}}/nmx_build_output.zip"
@@ -61,12 +65,12 @@
     pause:
       seconds: 120
     when: NMX_Installed is defined and NMX_Installed.exists==true
-  - name: Ping Host machine - wait till it restarts - timeout 5 minutes
+  - name: Ping Host machine - wait till it restarts - timeout 10 minutes
     win_wait_for:
       host: "{{ ansible_host }}"
       port: "{{ansible_port}}" #SSH Port
       state: started
-      timeout: 300 #wait for 5 minutes to bring machine up
+      timeout: 600 #wait for 10 minutes to bring machine up
   - name: Find the installation file
     win_find:
       paths: C:\Temp\nmx
@@ -80,12 +84,12 @@
       arguments: /SP- /SILENT /SUPPRESSMSGBOXES /Type=ClientAndServer /NDDS_DOMAINID="{{SiteID}}"
       reboot_required: true
       state: present
-  - name: Ping Host machine - wait till it restarts - timeout 5 minutes
+  - name: Ping Host machine - wait till it restarts - timeout 10 minutes
     win_wait_for:
       host: "{{ ansible_host }}"
       port: "{{ansible_port}}" #SSH Port
       state: started
-      timeout: 300 #wait for 5 minutes to bring machine up
+      timeout: 600 #wait for 10 minutes to bring machine up
   - name: Delete the NMX folder
     win_file:
       path: C:\Temp\nmx
