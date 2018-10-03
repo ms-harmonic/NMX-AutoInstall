@@ -88,6 +88,12 @@
       arguments: /SP- /SILENT /SUPPRESSMSGBOXES /Type=ClientAndServer /NDDS_DOMAINID="{{SiteID}}"
       reboot_required: true
       state: present
+  - name: Reboot NMX server after installing NMX
+    win_shell: Restart-Computer -Force
+  - name: Wait 2 mins for server to reboot
+    pause:
+      seconds: 120
+    when: NMX_Installed is defined and NMX_Installed.exists==true
   - name: Ping Host machine - wait till it restarts - timeout 10 minutes
     win_wait_for:
       host: "{{ ansible_host }}"
