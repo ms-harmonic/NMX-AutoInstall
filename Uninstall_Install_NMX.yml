@@ -59,7 +59,7 @@
         state: absent
     when: NMX_Installed is defined and NMX_Installed.exists==true
   - name: Setup Autologon for starting remote session after reboot
-    win_shell: C:\Utilities\Autologon.exe /accepteula "{{ nmx_username }}" "{{ nmx_password }}"
+    win_shell: C:\Utilities\Autologon.exe /accepteula "{{ nmx_username }}" . "{{ nmx_password }}"
   - name: Reboot NMX server after uninstalling NMX
     win_shell: Restart-Computer -Force
     when: NMX_Installed is defined and NMX_Installed.exists==true
