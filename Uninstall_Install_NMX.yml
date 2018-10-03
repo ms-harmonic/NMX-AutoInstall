@@ -73,7 +73,7 @@
       port: "{{ansible_port}}" #SSH Port
       state: started
       timeout: 600 #wait for 10 minutes to bring machine up
-  - name: Wait 1 minute  after reboot
+  - name: Wait 2 minutes  after reboot to run the uninstall finalization scripts
     pause:
       seconds: 120
     when: NMX_Installed is defined and NMX_Installed.exists==true
