@@ -58,6 +58,8 @@
         reboot_required: true
         state: absent
     when: NMX_Installed is defined and NMX_Installed.exists==true
+  - name: Setup Autologon for starting remote session after reboot
+    win_command: C:\Utilities\Autologon.exe /accepteula "{{ nmx_username }}" "{{ nmx_password }}"
   - name: Reboot NMX server after uninstalling NMX
     win_shell: Restart-Computer -Force
     when: NMX_Installed is defined and NMX_Installed.exists==true
@@ -71,6 +73,8 @@
       port: "{{ansible_port}}" #SSH Port
       state: started
       timeout: 600 #wait for 10 minutes to bring machine up
+  - name: Setup Autologon for starting remote session after reboot once installation is done
+    win_command: C:\Utilities\Autologon.exe /accepteula "{{ nmx_username }}" "{{ nmx_password }}"
   - name: Find the installation file
     win_find:
       paths: C:\Temp\nmx
