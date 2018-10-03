@@ -88,8 +88,6 @@
       arguments: /SP- /SILENT /SUPPRESSMSGBOXES /Type=ClientAndServer /NDDS_DOMAINID="{{SiteID}}"
       reboot_required: true
       state: present
-  - name: Reboot NMX server after installing NMX
-    win_shell: Restart-Computer -Force
   - name: Wait 2 mins for server to reboot
     pause:
       seconds: 120
