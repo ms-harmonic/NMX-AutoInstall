@@ -24,7 +24,7 @@
         ! 1 Silent Mode True, Any other value  - False.
         [Mode]
         Silent=1
-        QuickInstall=1
+        QuickInstall=0
   - name: Delete the NMX folder - Cleanup before downloading new build
     win_file:
       path: C:\Temp\nmx
